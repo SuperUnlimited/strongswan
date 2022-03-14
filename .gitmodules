@@ -1,0 +1,3 @@
+[submodule "src/frontends/android/app/src/main/jni/openssl"]
+	path = src/frontends/android/app/src/main/jni/openssl
+	url = https://github.com/SuperUnlimited/android-ndk-boringssl.git

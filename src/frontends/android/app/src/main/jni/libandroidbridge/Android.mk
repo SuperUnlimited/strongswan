@@ -12,6 +12,7 @@ backend/android_private_key.c \
 backend/android_scheduler.c \
 backend/android_service.c \
 charonservice.c \
+log/android_log_logger.c \
 kernel/android_ipsec.c \
 kernel/android_net.c \
 kernel/network_manager.c \

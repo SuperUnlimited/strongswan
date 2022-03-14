@@ -19,6 +19,7 @@
 #include <string.h>
 #include <sys/utsname.h>
 #include <android/log.h>
+#include "log/android_log_logger.h"
 #include <errno.h>
 
 #include "charonservice.h"
@@ -94,6 +95,10 @@ struct private_charonservice_t {
 	 * Sockets that were bypassed and we keep track for
 	 */
 	linked_list_t *sockets;
+	/**
+	 * The custom android logger
+	 */
+	android_log_logger_t *logger;
 };
 
 /**
@@ -129,7 +134,7 @@ static void dbg_android(debug_t group, level_t level, char *fmt, ...)
 			{
 				*(next++) = '\0';
 			}
-			__android_log_print(ANDROID_LOG_INFO, "charon", "00[%s] %s\n",
+			__custom_android_log_print(ANDROID_LOG_INFO, "charon", "00[%s] %s\n",
 								sgroup, current);
 			current = next;
 		}
@@ -573,7 +578,9 @@ static void charonservice_init(JNIEnv *env, jobject service, jobject builder,
 		.network_manager = network_manager_create(service),
 		.sockets = linked_list_create(),
 		.vpn_service = (*env)->NewGlobalRef(env, service),
+		.logger = android_log_logger_create()
 	);
+	charon->bus->add_logger(charon->bus, &this->logger->logger);
 	charonservice = &this->public;
 
 	lib->plugins->add_static_features(lib->plugins, "androidbridge", features,
@@ -607,6 +614,7 @@ static void charonservice_deinit(JNIEnv *env)
 	this->builder->destroy(this->builder);
 	this->creds->destroy(this->creds);
 	this->attr->destroy(this->attr);
+	this->logger->destroy(this->logger);
 	(*env)->DeleteGlobalRef(env, this->vpn_service);
 	free(this);
 	charonservice = NULL;
