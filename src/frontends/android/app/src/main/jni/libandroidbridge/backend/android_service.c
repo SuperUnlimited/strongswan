@@ -155,8 +155,9 @@ static job_requeue_t handle_plain(private_android_service_t *this)
 
 	old = thread_cancelability(TRUE);
     struct pollfd pfd_read;
-    int timeout = 1000;
+    int timeout = 2000;
     pfd_read.fd = tunfd;
+    pfd_read.events = POLLIN;
 	len = poll(&pfd_read, 1, timeout);
 	thread_cancelability(old);
 
@@ -171,7 +172,7 @@ static job_requeue_t handle_plain(private_android_service_t *this)
 	}
 	else if (len == 0)
 	{	/* timeout, check again right away */
-		return JOB_REQUEUE_DIRECT;
+		return JOB_REQUEUE_FAIR;
 	}
 
 	raw = chunk_alloc(this->mtu);
