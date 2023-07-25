@@ -1,4 +1,7 @@
 LOCAL_PATH := $(call my-dir)
+LOCAL_CFLAGS := -g
+LOCAL_STRIP_MODE := none
+LOCAL_STRIP_MODULE := keep_symbols
 include $(CLEAR_VARS)
 
 # use "bring your own device" (BYOD) features (also see USE_BYOD in
