@@ -157,6 +157,7 @@ static job_requeue_t handle_plain(private_android_service_t *this)
     struct pollfd pfd_read;
     int timeout = 2000;
     pfd_read.fd = tunfd;
+    pfd_read.events = POLLIN;
 	len = poll(&pfd_read, 1, timeout);
 	thread_cancelability(old);
 
