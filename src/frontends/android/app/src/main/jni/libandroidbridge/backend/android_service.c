@@ -150,7 +150,7 @@ static job_requeue_t handle_plain(private_android_service_t *this)
 
 	old = thread_cancelability(TRUE);
     struct pollfd pfd_read;
-    int timeout = 5000;
+    int timeout = -1; // disable timeout
     pfd_read.fd = tunfd;
     pfd_read.events = POLLIN;
 	len = poll(&pfd_read, 1, timeout);
@@ -173,12 +173,15 @@ static job_requeue_t handle_plain(private_android_service_t *this)
 
     if (pfd_read.revents & (POLLHUP)) {
         DBG1(DBG_DMN, "poll file descriptor was \"hung up\"");
+        return JOB_REQUEUE_FAIR;
     }
     if (pfd_read.revents & (POLLERR)) {
         DBG1(DBG_DMN, "poll some poll error occurred");
+        return JOB_REQUEUE_FAIR;
     }
     if (pfd_read.revents & (POLLNVAL)) {
         DBG1(DBG_DMN, "poll requested events \"invalid\"");
+        return JOB_REQUEUE_FAIR;
     }
 
 	raw = chunk_alloc(this->mtu);
