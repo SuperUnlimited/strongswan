@@ -166,9 +166,9 @@ static job_requeue_t handle_plain(private_android_service_t *this)
         return JOB_REQUEUE_NONE;
 	}
 	else if (len == 0)
-	{	/* timeout, check again right away */
+	{	/* timeout, should not reach */
         DBG1(DBG_DMN, "poll file descriptor timeout");
-        return JOB_RESCHEDULE_MS(3001);
+        return JOB_REQUEUE_FAIR;
 	}
 
     if (pfd_read.revents & (POLLHUP)) {
