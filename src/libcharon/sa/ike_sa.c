@@ -651,7 +651,7 @@ static void set_dscp(private_ike_sa_t *this, packet_t *packet)
 METHOD(ike_sa_t, send_keepalive, void,
 	private_ike_sa_t *this, bool scheduled)
 {
-	time_t last_out, now, diff;
+	time_t last_out, last_in, now, diff, diff_in;
 
 	if (scheduled)
 	{
@@ -667,9 +667,18 @@ METHOD(ike_sa_t, send_keepalive, void,
 	}
 
 	last_out = get_use_time(this, FALSE);
+	last_in = get_use_time(this, TRUE);
 	now = time_monotonic(NULL);
 
 	diff = now - last_out;
+	diff_in = now - last_in;
+
+    DBG1(DBG_IKE, "diff out %d", diff);
+    DBG1(DBG_IKE, "diff in  %d", diff_in);
+
+    if(diff_in > diff) {
+        diff = diff_in;
+    }
 
 	if (this->keepalive_dpd_margin &&
 		diff > (this->keepalive_interval + this->keepalive_dpd_margin))
