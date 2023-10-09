@@ -673,9 +673,6 @@ METHOD(ike_sa_t, send_keepalive, void,
 	diff = now - last_out;
 	diff_in = now - last_in;
 
-    DBG1(DBG_IKE, "diff out %d", diff);
-    DBG1(DBG_IKE, "diff in  %d", diff_in);
-
     if(diff_in > diff) {
         diff = diff_in;
     }
